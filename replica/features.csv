@@ -1,31 +1,31 @@
 feature,area,priority,original,clone,notes
-Connect to a Bluetooth OBD adapter,connection,must,yes,no,Autel uses its own VCI; clone uses BLE ELM327-compatible adapter
-Initialise adapter and auto-detect protocol,connection,must,yes,no,ATZ ATE0 ATL0 ATS0 ATH1 ATSP0
-Show adapter connection status everywhere,connection,must,yes,no,
-Read VIN automatically,vehicle,must,yes,no,mode 09 PID 02
-Enter vehicle year make model odometer plate,vehicle,must,yes,no,
-Enter customer name and phone,vehicle,must,yes,no,
-Auto-scan with progress,scan,must,yes,no,
-System Scanned list with status and DTC count,scan,must,yes,partial,generic OBD sees powertrain ECUs only
-Read stored/confirmed DTCs,dtc,must,yes,no,mode 03
-Read pending DTCs,dtc,must,yes,no,mode 07
-Read permanent DTCs,dtc,must,yes,no,mode 0A
-Plain-English description per DTC,dtc,must,yes,no,own description table for generic codes
-Clear DTCs with confirmation,dtc,must,yes,no,mode 04
-Printable customer report with report ID and test time,report,must,yes,no,
-Report: shop header vehicle customer device systems DTCs,report,must,yes,no,
-Save scans on the device,history,must,yes,no,
-Freeze frame data,dtc,should,yes,no,mode 02
-Readiness / I-M monitors,scan,should,yes,no,mode 01 PID 01
-Live data with values,live,should,yes,no,mode 01
-Live data graph,live,should,yes,no,
-Technician notes and signature lines on report,report,should,yes,no,
-Share or email report as PDF,report,should,yes,no,
-Report history with search,history,should,yes,no,
-Vehicle history across visits,history,should,yes,no,
-Shop settings (name tel email address technician units),settings,should,yes,no,
-Works offline,platform,could,yes,no,
-Install as an app on the tablet,platform,could,yes,no,
+Connect to a Bluetooth OBD adapter,connection,must,yes,partial,Web Bluetooth transport written; not yet tried with a real adapter on the tablet
+Initialise adapter and auto-detect protocol,connection,must,yes,yes,ATZ ATE0 ATL0 ATS0 ATH1 ATSP0
+Show adapter connection status everywhere,connection,must,yes,yes,
+Read VIN automatically,vehicle,must,yes,yes,mode 09 PID 02
+Enter vehicle year make model odometer plate,vehicle,must,yes,yes,
+Enter customer name and phone,vehicle,must,yes,yes,
+Auto-scan with progress,scan,must,yes,yes,
+System Scanned list with status and DTC count,scan,must,yes,partial,generic OBD sees powertrain ECUs only (2-3 rows vs 36-53 on the MaxiSys)
+Read stored/confirmed DTCs,dtc,must,yes,yes,mode 03
+Read pending DTCs,dtc,must,yes,yes,mode 07
+Read permanent DTCs,dtc,must,yes,yes,mode 0A
+Plain-English description per DTC,dtc,must,yes,partial,~200 common generic codes written; others get a code-family explanation
+Clear DTCs with confirmation,dtc,must,yes,yes,mode 04
+Printable customer report with report ID and test time,report,must,yes,yes,
+Report: shop header vehicle customer device systems DTCs,report,must,yes,yes,
+Save scans on the device,history,must,yes,yes,
+Freeze frame data,dtc,should,yes,yes,mode 02
+Readiness / I-M monitors,scan,should,yes,yes,mode 01 PID 01
+Live data with values,live,should,yes,yes,mode 01
+Live data graph,live,should,yes,yes,
+Technician notes and signature lines on report,report,should,yes,yes,
+Share or email report as PDF,report,should,yes,partial,print/save PDF and share a text summary; no one-tap PDF email yet
+Report history with search,history,should,yes,yes,
+Vehicle history across visits,history,should,yes,yes,
+Shop settings (name tel email address technician units),settings,should,yes,yes,
+Works offline,platform,could,yes,yes,
+Install as an app on the tablet,platform,could,yes,partial,manifest + service worker; not yet installed on the tablet
 Record live data session,live,could,yes,no,
 Read DTCs from other CAN modules by UDS,scan,could,yes,no,needs per-make module addresses
 OEM full-system scan of every module,scan,must,yes,skip,Autel's per-manufacturer module database; not reachable with generic OBD

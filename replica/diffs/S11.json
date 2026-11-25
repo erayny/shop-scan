@@ -1,0 +1,40 @@
+{
+  "mode": "layout",
+  "original": {
+    "width": 850,
+    "height": 1100
+  },
+  "clone": {
+    "width": 850,
+    "height": 1100
+  },
+  "compared_at": {
+    "width": 480,
+    "height": 621
+  },
+  "height_delta_pct": 0.0,
+  "score": 20.9,
+  "verdict": "different",
+  "regions": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 850,
+      "h": 1100,
+      "cells": 144,
+      "where": "middle centre"
+    },
+    {
+      "x": 637,
+      "y": 0,
+      "w": 212,
+      "h": 141,
+      "cells": 4,
+      "where": "top right"
+    }
+  ],
+  "files": {
+    "original": "replica/screens/S11-orig-1.png",
+    "clone": "replica/clone-screens/S11-1.png"
+  }
+}
