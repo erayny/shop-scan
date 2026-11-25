@@ -17,7 +17,7 @@ export function Home() {
     <>
       <div className="row" style={{ justifyContent: 'space-between' }}>
         <h1 style={{ margin: 0 }}>{BRAND.name}</h1>
-        <Link to="/connect"><StatusPill status={conn.status} label={conn.status === 'connected' ? `Connected · ${conn.adapterName}` : undefined} /></Link>
+        <span className="muted">{conn.status === 'connected' ? `Connected · ${conn.adapterName}` : BRAND.tagline}</span>
       </div>
       <div className="tiles">
         <Link className="tile" to={conn.status === 'connected' ? '/scan/new' : '/connect?next=scan'}>
@@ -121,7 +121,7 @@ export function SettingsScreen() {
     const blob = new Blob([await exportAll()], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `shop-scan-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `liftside-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
   };

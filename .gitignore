@@ -1,6 +1,6 @@
 node_modules
 dist
-# Reference material from the shop's real Autel reports: contains customer data. Never commit or ship.
+# Reference scan reports from the shop's existing tool: contain customer data. Never commit or ship.
 replica/screens/
 test-results
 *.local

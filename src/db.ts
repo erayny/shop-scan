@@ -1,6 +1,7 @@
 import Dexie, { type Table } from 'dexie';
 import type { ScanResult } from './obd/scan';
 import type { Units } from './obd/decode';
+import { BRAND } from './brand';
 
 export interface Settings {
   id: 'shop';
@@ -39,7 +40,7 @@ class ShopDb extends Dexie {
   vehicles!: Table<Vehicle, string>;
   scans!: Table<ScanRecord, number>;
   constructor() {
-    super('shop-scan');
+    super('liftside');
     this.version(1).stores({
       settings: 'id',
       vehicles: 'key, vin, plate, customerName, updatedAt',
@@ -62,20 +63,20 @@ export function vehicleKey(vin: string, plate: string): string {
 
 export function newReportId(d = new Date()): string {
   const p = (n: number) => String(n).padStart(2, '0');
-  return `SS${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+  return `${BRAND.reportPrefix}${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }
 
 /** Everything on the tablet, as one JSON file (backup before a tablet dies). */
 export async function exportAll(): Promise<string> {
   return JSON.stringify({
-    app: 'shop-scan', version: 1, exportedAt: new Date().toISOString(),
+    app: 'liftside', version: 1, exportedAt: new Date().toISOString(),
     settings: await db.settings.toArray(), vehicles: await db.vehicles.toArray(), scans: await db.scans.toArray(),
   }, null, 1);
 }
 
 export async function importAll(json: string): Promise<number> {
   const data = JSON.parse(json);
-  if (data.app !== 'shop-scan') throw new Error('That file is not a Shop Scan backup.');
+  if (data.app !== 'liftside') throw new Error(`That file is not a ${BRAND.name} backup.`);
   await db.transaction('rw', db.settings, db.vehicles, db.scans, async () => {
     await db.settings.bulkPut(data.settings ?? []);
     await db.vehicles.bulkPut(data.vehicles ?? []);

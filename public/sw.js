@@ -1,7 +1,7 @@
 // Offline: cache the app shell on install, serve cache-first, refresh in the background.
-const CACHE = 'shop-scan-v1';
+const CACHE = 'liftside-v1';
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './index.html', './manifest.webmanifest', './icon.svg'])));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'])));
   self.skipWaiting();
 });
 self.addEventListener('activate', (e) => {

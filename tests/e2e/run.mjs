@@ -65,7 +65,7 @@ async function test(id, name, fn, viewport) {
 
 const run = async () => {
   browser = await chromium.launch();
-  console.log('Shop Scan e2e against ' + BASE);
+  console.log('Liftside e2e against ' + BASE);
 
   await test('F01-H1', 'connect a demo car and the VIN is read automatically, year and make filled', async (p) => {
     await axe(p, 'home');
@@ -133,7 +133,7 @@ const run = async () => {
     await p.getByRole('button', { name: 'Start scan' }).dblclick();
     await p.waitForURL(/#\/scan\/\d+$/, { timeout: 20000 });
     const n = await p.evaluate(() => new Promise((res) => {
-      const r = indexedDB.open('shop-scan');
+      const r = indexedDB.open('liftside');
       r.onsuccess = () => { const c = r.result.transaction('scans').objectStore('scans').count(); c.onsuccess = () => res(c.result); };
     }));
     expect(n === 1, `expected 1 scan, found ${n}`);
@@ -208,7 +208,7 @@ const run = async () => {
     await p.getByText('Settings saved').waitFor();
     await axe(p, 'settings');
     const [dl] = await Promise.all([p.waitForEvent('download'), p.getByRole('button', { name: /Export backup/ }).click()]);
-    expect(/shop-scan-backup-.*\.json/.test(dl.suggestedFilename()), 'bad backup name');
+    expect(/liftside-backup-.*\.json/.test(dl.suggestedFilename()), 'bad backup name');
     await scanCar(p, 'camry');
     await p.getByRole('link', { name: 'Customer report' }).click();
     await p.getByText('Demo Auto Repair').waitFor();

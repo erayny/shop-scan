@@ -1,0 +1,20 @@
+{
+ "name": "Liftside",
+ "avoid": [
+  "Autel",
+  "MaxiSys",
+  "MaxiSYS",
+  "MaxiCOM",
+  "MaxiAP",
+  "MaxiCheck"
+ ],
+ "domains": [
+  "autel.com",
+  "autel.us"
+ ],
+ "colors": [
+  "#e00010",
+  "#e60012",
+  "#e00818"
+ ]
+}

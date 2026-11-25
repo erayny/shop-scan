@@ -14,7 +14,7 @@ describe('on-device database', () => {
   beforeEach(async () => { await db.delete(); await db.open(); });
 
   it('makes report ids and vehicle keys', () => {
-    expect(newReportId(new Date(2026, 10, 25, 9, 5, 7))).toBe('SS20261125090507');
+    expect(newReportId(new Date(2026, 10, 25, 9, 5, 7))).toBe('LS20261125090507');
     expect(vehicleKey('wddng8gb0aa000215', '')).toBe('WDDNG8GB0AA000215');
     expect(vehicleKey('', 'ab 12 cd')).toBe('PLATE:AB12CD');
   });
@@ -29,7 +29,7 @@ describe('on-device database', () => {
   });
 
   it('rejects files that are not backups', async () => {
-    await expect(importAll('{"hello":1}')).rejects.toThrow(/not a Shop Scan backup/);
+    await expect(importAll('{"hello":1}')).rejects.toThrow(/not a Liftside backup/);
     await expect(importAll('not json')).rejects.toThrow();
   });
 
