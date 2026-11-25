@@ -36,3 +36,8 @@ ADAS calibration,special functions,could,yes,skip,needs targets and OEM procedur
 TPMS sensor programming,special functions,could,yes,skip,needs Autel TPMS hardware
 Service resets (oil brake SAS),special functions,could,yes,skip,OEM-specific per make
 Repair info / ALLDATA integration,integrations,could,yes,skip,partner network
+No subscription or account; nothing expires,platform,should,no,yes,fix X1: users of paid scan tools complain about lapsed subscriptions (thin evidence)
+Plain-English verdict banner on screen and report,report,should,no,yes,fix X3
+Text the customer a summary,report,should,no,yes,fix X4
+Clear-codes warning about readiness and auto re-check,dtc,should,no,yes,fix X5
+Resume a scan after the adapter drops,scan,should,no,yes,from test B1

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router';
-import { AlertTriangle, CheckCircle2, FileText, Printer, RefreshCw, Share2, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, FileText, MessageSquare, Printer, RefreshCw, Share2, Trash2 } from 'lucide-react';
 import { useConn } from '../conn';
 import { Button, ButtonLink, Dialog, Empty, Field, StatusBadge, StepList, SystemRow, fmtDate, useToast, type StepState } from '../kit';
 import { db, getSettings, newReportId, vehicleKey, type ScanRecord, type Settings, DEFAULT_SETTINGS } from '../../db';
@@ -323,6 +323,7 @@ export function Report() {
       <div className="row no-print" style={{ marginBottom: 16 }}>
         <Button onClick={() => window.print()}><Printer size={18} aria-hidden /> Print / save PDF</Button>
         <Button variant="secondary" onClick={share}><Share2 size={18} aria-hidden /> Share summary</Button>
+        {scan.customerTel && <a className="btn btn-secondary btn-md" href={`sms:${scan.customerTel.replace(/[^\d+]/g, '')}?body=${encodeURIComponent(summary())}`}><MessageSquare size={18} aria-hidden /> Text customer</a>}
         <Link to={`/scan/${scan.id}`} className="btn btn-ghost btn-md">Back to results</Link>
       </div>
       <article className="report">
