@@ -1,0 +1,38 @@
+feature,area,priority,original,clone,notes
+Connect to a Bluetooth OBD adapter,connection,must,yes,no,Autel uses its own VCI; clone uses BLE ELM327-compatible adapter
+Initialise adapter and auto-detect protocol,connection,must,yes,no,ATZ ATE0 ATL0 ATS0 ATH1 ATSP0
+Show adapter connection status everywhere,connection,must,yes,no,
+Read VIN automatically,vehicle,must,yes,no,mode 09 PID 02
+Enter vehicle year make model odometer plate,vehicle,must,yes,no,
+Enter customer name and phone,vehicle,must,yes,no,
+Auto-scan with progress,scan,must,yes,no,
+System Scanned list with status and DTC count,scan,must,yes,partial,generic OBD sees powertrain ECUs only
+Read stored/confirmed DTCs,dtc,must,yes,no,mode 03
+Read pending DTCs,dtc,must,yes,no,mode 07
+Read permanent DTCs,dtc,must,yes,no,mode 0A
+Plain-English description per DTC,dtc,must,yes,no,own description table for generic codes
+Clear DTCs with confirmation,dtc,must,yes,no,mode 04
+Printable customer report with report ID and test time,report,must,yes,no,
+Report: shop header vehicle customer device systems DTCs,report,must,yes,no,
+Save scans on the device,history,must,yes,no,
+Freeze frame data,dtc,should,yes,no,mode 02
+Readiness / I-M monitors,scan,should,yes,no,mode 01 PID 01
+Live data with values,live,should,yes,no,mode 01
+Live data graph,live,should,yes,no,
+Technician notes and signature lines on report,report,should,yes,no,
+Share or email report as PDF,report,should,yes,no,
+Report history with search,history,should,yes,no,
+Vehicle history across visits,history,should,yes,no,
+Shop settings (name tel email address technician units),settings,should,yes,no,
+Works offline,platform,could,yes,no,
+Install as an app on the tablet,platform,could,yes,no,
+Record live data session,live,could,yes,no,
+Read DTCs from other CAN modules by UDS,scan,could,yes,no,needs per-make module addresses
+OEM full-system scan of every module,scan,must,yes,skip,Autel's per-manufacturer module database; not reachable with generic OBD
+OEM-specific DTC descriptions,dtc,should,yes,skip,Autel's licensed database
+Key programming and immobiliser,special functions,could,yes,skip,OEM-specific and security-sensitive
+ECU coding and adaptations,special functions,could,yes,skip,OEM-specific
+ADAS calibration,special functions,could,yes,skip,needs targets and OEM procedures
+TPMS sensor programming,special functions,could,yes,skip,needs Autel TPMS hardware
+Service resets (oil brake SAS),special functions,could,yes,skip,OEM-specific per make
+Repair info / ALLDATA integration,integrations,could,yes,skip,partner network

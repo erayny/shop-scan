@@ -1,0 +1,171 @@
+// Plain-English meanings for common generic (SAE-defined) trouble codes, written for this
+// app. Manufacturer-specific codes (P1xxx, many B/C/U codes) fall back to a family description.
+
+const D: Record<string, string> = {
+  P0010: 'Intake camshaft timing actuator circuit (bank 1)',
+  P0011: 'Intake camshaft timing too far advanced (bank 1)',
+  P0012: 'Intake camshaft timing too far retarded (bank 1)',
+  P0013: 'Exhaust camshaft timing actuator circuit (bank 1)',
+  P0014: 'Exhaust camshaft timing too far advanced (bank 1)',
+  P0016: 'Crankshaft and camshaft positions out of sync (bank 1)',
+  P0017: 'Crankshaft and exhaust camshaft positions out of sync (bank 1)',
+  P0018: 'Crankshaft and camshaft positions out of sync (bank 2)',
+  P0020: 'Intake camshaft timing actuator circuit (bank 2)',
+  P0021: 'Intake camshaft timing too far advanced (bank 2)',
+  P0030: 'Oxygen sensor heater control circuit (bank 1, sensor 1)',
+  P0036: 'Oxygen sensor heater control circuit (bank 1, sensor 2)',
+  P0087: 'Fuel rail pressure too low',
+  P0088: 'Fuel rail pressure too high',
+  P0096: 'Intake air temperature sensor 2 range/performance',
+  P0100: 'Mass air flow sensor circuit',
+  P0101: 'Mass air flow sensor reading out of range',
+  P0102: 'Mass air flow sensor signal too low',
+  P0103: 'Mass air flow sensor signal too high',
+  P0106: 'Manifold pressure (MAP) sensor reading out of range',
+  P0107: 'Manifold pressure (MAP) sensor signal too low',
+  P0108: 'Manifold pressure (MAP) sensor signal too high',
+  P0110: 'Intake air temperature sensor circuit',
+  P0112: 'Intake air temperature sensor signal too low',
+  P0113: 'Intake air temperature sensor signal too high',
+  P0115: 'Engine coolant temperature sensor circuit',
+  P0116: 'Engine coolant temperature sensor reading out of range',
+  P0117: 'Engine coolant temperature sensor signal too low',
+  P0118: 'Engine coolant temperature sensor signal too high',
+  P0120: 'Throttle position sensor A circuit',
+  P0121: 'Throttle position sensor A reading out of range',
+  P0122: 'Throttle position sensor A signal too low',
+  P0123: 'Throttle position sensor A signal too high',
+  P0125: 'Engine takes too long to reach temperature for closed-loop fuel control',
+  P0128: 'Engine running cooler than expected (thermostat)',
+  P0171: 'Engine running too lean (bank 1)',
+  P0172: 'Engine running too rich (bank 1)',
+  P0174: 'Engine running too lean (bank 2)',
+  P0175: 'Engine running too rich (bank 2)',
+  P0191: 'Fuel rail pressure sensor reading out of range',
+  P0217: 'Engine overheating',
+  P0219: 'Engine over-speed',
+  P0230: 'Fuel pump primary circuit',
+  P0234: 'Turbo/supercharger overboost',
+  P0299: 'Turbo/supercharger underboost',
+  P0300: 'Random or multiple cylinder misfire',
+  P0325: 'Knock sensor 1 circuit (bank 1)',
+  P0327: 'Knock sensor 1 signal too low (bank 1)',
+  P0332: 'Knock sensor 2 signal too low (bank 2)',
+  P0335: 'Crankshaft position sensor A circuit',
+  P0336: 'Crankshaft position sensor A reading out of range',
+  P0340: 'Camshaft position sensor A circuit (bank 1)',
+  P0341: 'Camshaft position sensor A reading out of range (bank 1)',
+  P0345: 'Camshaft position sensor A circuit (bank 2)',
+  P0351: 'Ignition coil A circuit',
+  P0352: 'Ignition coil B circuit',
+  P0353: 'Ignition coil C circuit',
+  P0354: 'Ignition coil D circuit',
+  P0400: 'Exhaust gas recirculation (EGR) flow',
+  P0401: 'EGR flow too low',
+  P0402: 'EGR flow too high',
+  P0403: 'EGR control circuit',
+  P0404: 'EGR control circuit range/performance',
+  P0410: 'Secondary air injection system',
+  P0411: 'Secondary air injection flow incorrect',
+  P0420: 'Catalytic converter efficiency below threshold (bank 1)',
+  P0421: 'Warm-up catalyst efficiency below threshold (bank 1)',
+  P0430: 'Catalytic converter efficiency below threshold (bank 2)',
+  P0440: 'Evaporative emission (EVAP) system',
+  P0441: 'EVAP system incorrect purge flow',
+  P0442: 'EVAP system small leak detected',
+  P0443: 'EVAP purge control valve circuit',
+  P0446: 'EVAP vent control circuit',
+  P0449: 'EVAP vent valve/solenoid circuit',
+  P0451: 'EVAP pressure sensor reading out of range',
+  P0452: 'EVAP pressure sensor signal too low',
+  P0453: 'EVAP pressure sensor signal too high',
+  P0455: 'EVAP system large leak detected (often a loose fuel cap)',
+  P0456: 'EVAP system very small leak detected',
+  P0457: 'EVAP leak detected (fuel cap loose or off)',
+  P0461: 'Fuel level sensor reading out of range',
+  P0480: 'Cooling fan 1 control circuit',
+  P0500: 'Vehicle speed sensor A',
+  P0505: 'Idle air control system',
+  P0506: 'Idle speed lower than expected',
+  P0507: 'Idle speed higher than expected',
+  P0520: 'Engine oil pressure sensor/switch circuit',
+  P0530: 'A/C refrigerant pressure sensor circuit',
+  P0560: 'System voltage',
+  P0562: 'System voltage low',
+  P0563: 'System voltage high',
+  P0571: 'Brake switch A circuit',
+  P0600: 'Control module serial communication link',
+  P0601: 'Control module memory checksum error',
+  P0602: 'Control module programming error',
+  P0603: 'Control module keep-alive memory error',
+  P0604: 'Control module RAM error',
+  P0605: 'Control module ROM error',
+  P0606: 'Control module processor fault',
+  P0700: 'Transmission control system fault (check the transmission module for codes)',
+  P0705: 'Transmission range sensor circuit',
+  P0710: 'Transmission fluid temperature sensor circuit',
+  P0715: 'Transmission input/turbine speed sensor circuit',
+  P0720: 'Transmission output speed sensor circuit',
+  P0730: 'Incorrect gear ratio',
+  P0740: 'Torque converter clutch circuit',
+  P0741: 'Torque converter clutch stuck off or not engaging',
+  P0750: 'Shift solenoid A',
+  P0755: 'Shift solenoid B',
+  P0841: 'Transmission fluid pressure sensor/switch A circuit',
+  P0A80: 'Hybrid battery pack needs replacement',
+  P2096: 'Downstream fuel trim system too lean (bank 1)',
+  P2097: 'Downstream fuel trim system too rich (bank 1)',
+  P2135: 'Throttle position sensors A/B disagree',
+  P2187: 'Engine too lean at idle (bank 1)',
+  P2188: 'Engine too rich at idle (bank 1)',
+  P2195: 'Oxygen sensor signal stuck lean (bank 1, sensor 1)',
+  P2196: 'Oxygen sensor signal stuck rich (bank 1, sensor 1)',
+  U0001: 'High-speed CAN communication bus',
+  U0073: 'Control module communication bus A off',
+  U0100: 'Lost communication with engine control module (ECM/PCM)',
+  U0101: 'Lost communication with transmission control module (TCM)',
+  U0121: 'Lost communication with ABS control module',
+  U0140: 'Lost communication with body control module (BCM)',
+  U0142: 'Lost communication with body control module B',
+  U0151: 'Lost communication with airbag (restraints) control module',
+  U0155: 'Lost communication with instrument cluster',
+  U0163: 'Lost communication with navigation control module',
+  U0164: 'Lost communication with climate control (HVAC) module',
+};
+
+// Patterned families, generated rather than typed out.
+for (let c = 1; c <= 12; c++) D[`P03${String(c).padStart(2, '0')}`] = `Cylinder ${c} misfire detected`;
+for (let c = 1; c <= 8; c++) D[`P02${String(c).padStart(2, '0')}`] = `Fuel injector circuit, cylinder ${c}`;
+[['P0130', 1, 1], ['P0136', 1, 2], ['P0150', 2, 1], ['P0156', 2, 2]].forEach(([base, bank, s]) => {
+  const n = parseInt(String(base).slice(1), 16);
+  const label = `oxygen sensor (bank ${bank}, sensor ${s})`;
+  const kinds = ['circuit', 'signal too low', 'signal too high', 'slow response', 'no activity detected', 'heater circuit'];
+  kinds.forEach((k, i) => {
+    const code = 'P' + (n + i).toString(16).toUpperCase().padStart(4, '0');
+    D[code] ??= `${label[0].toUpperCase() + label.slice(1)} ${k}`;
+  });
+});
+
+const FAMILY: Record<string, string> = {
+  P0: 'Generic powertrain code', P2: 'Generic powertrain code', P3: 'Powertrain code',
+  P1: 'Manufacturer-specific powertrain code',
+  C0: 'Chassis code (brakes, steering, suspension)', C1: 'Manufacturer-specific chassis code', C2: 'Manufacturer-specific chassis code', C3: 'Chassis code',
+  B0: 'Body code (airbags, doors, lighting, climate)', B1: 'Manufacturer-specific body code', B2: 'Manufacturer-specific body code', B3: 'Body code',
+  U0: 'Network communication code', U1: 'Manufacturer-specific network code', U2: 'Manufacturer-specific network code', U3: 'Network code',
+};
+const P0_AREA: Record<string, string> = {
+  '0': 'fuel, air or emissions controls', '1': 'fuel and air metering', '2': 'fuel and air metering (injectors)',
+  '3': 'ignition system or misfire', '4': 'auxiliary emissions controls', '5': 'speed, idle or auxiliary inputs',
+  '6': 'computer or output circuits', '7': 'transmission', '8': 'transmission', '9': 'transmission',
+  A: 'hybrid propulsion', B: 'hybrid propulsion', C: 'hybrid propulsion',
+};
+
+export function describeDtc(code: string): { text: string; known: boolean } {
+  const c = code.toUpperCase();
+  if (D[c]) return { text: D[c], known: true };
+  const fam = FAMILY[c.slice(0, 2)] ?? 'Trouble code';
+  const area = c[0] === 'P' && (c[1] === '0' || c[1] === '2') ? P0_AREA[c[2]] : undefined;
+  return { text: area ? `${fam}: ${area}. Check service information for this vehicle.` : `${fam}. Check service information for this vehicle.`, known: false };
+}
+
+export const KNOWN_CODE_COUNT = () => Object.keys(D).length;
