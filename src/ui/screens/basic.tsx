@@ -57,6 +57,7 @@ export function Connect() {
     const ok = await conn.connect(kind);
     if (ok && next === 'scan') nav('/scan/new');
     if (ok && next === 'live') nav('/live');
+    if (ok && next?.startsWith('/')) nav(next, { replace: true });
   };
   const busy = conn.status === 'connecting';
   return (
@@ -111,11 +112,11 @@ export function Connect() {
 // S14 Settings
 export function SettingsScreen() {
   const toast = useToast();
-  const [s, setS] = useState<Settings>(DEFAULT_SETTINGS);
+  const [s, setS] = useState<Settings | null>(null);
   const [forget, setForget] = useState('');
   useEffect(() => { getSettings().then(setS); }, []);
-  const set = (k: keyof Settings) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setS({ ...s, [k]: e.target.value });
-  const save = async () => { await db.settings.put(s); toast('success', 'Settings saved'); };
+  const set = (k: keyof Settings) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => { const v = e.target.value; setS((p) => ({ ...(p ?? DEFAULT_SETTINGS), [k]: v })); };
+  const save = async () => { if (s) { await db.settings.put(s); toast('success', 'Settings saved'); } };
   const doExport = async () => {
     const blob = new Blob([await exportAll()], { type: 'application/json' });
     const a = document.createElement('a');
@@ -129,6 +130,7 @@ export function SettingsScreen() {
     try { const n = await importAll(await f.text()); toast('success', `Backup restored (${n} scans)`); }
     catch (e) { toast('error', (e as Error).message); }
   };
+  if (!s) return null;
   return (
     <>
       <h1>Settings</h1>

@@ -23,6 +23,8 @@ export function NewScan() {
   const toast = useToast();
   const [f, setF] = useState({ vin: '', year: '', make: '', model: '', plate: '', odometer: '', odometerUnit: 'mi' as 'mi' | 'km', customerName: '', customerTel: '', roNumber: '', technician: '' });
   const [readingVin, setReadingVin] = useState(false);
+  const [starting, setStarting] = useState(false);
+  const startingRef = useRef(false);
   const [vinMsg, setVinMsg] = useState('');
   const tried = useRef(false);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF((p) => ({ ...p, [k]: e.target.value }));
@@ -62,6 +64,9 @@ export function NewScan() {
   const vinErr = f.vin && !VIN_RE.test(f.vin.toUpperCase()) ? 'A VIN is 17 letters and numbers, without I, O or Q' : undefined;
 
   const start = async () => {
+    if (startingRef.current) return;
+    startingRef.current = true;
+    setStarting(true);
     const vin = f.vin.toUpperCase();
     const rec: ScanRecord = {
       reportId: newReportId(), vehicleKey: vehicleKey(vin, f.plate),
@@ -101,7 +106,7 @@ export function NewScan() {
         <Field id="tech" label="Technician" value={f.technician} onChange={set('technician')} />
       </div>
       <div className="row row-end" style={{ marginTop: 24 }}>
-        <Button onClick={start} disabled={!!vinErr}>Start scan</Button>
+        <Button onClick={start} disabled={!!vinErr} loading={starting}>Start scan</Button>
       </div>
     </>
   );
@@ -148,7 +153,7 @@ export function RunScan() {
   if (scan === undefined) return null;
   if (scan === null) return <Empty title="Scan not found" />;
   if (scan.status === 'complete') return <Navigate to={`/scan/${scan.id}`} replace />;
-  if (!conn.elm) return <Empty title="The adapter is not connected"><ButtonLink to="/connect">Reconnect</ButtonLink></Empty>;
+  if (!conn.elm) return <Empty title="The adapter is not connected"><p>This scan has not finished. Reconnect and it carries on.</p><ButtonLink to={`/connect?next=${encodeURIComponent(`/scan/${scan.id}/run`)}`}>Reconnect</ButtonLink></Empty>;
   return (
     <>
       <h1>Scanning…</h1>
@@ -238,6 +243,7 @@ export function ScanView() {
         <Button variant="secondary" onClick={rescan} disabled={!conn.elm}><RefreshCw size={18} aria-hidden /> Scan again</Button>
         <Button variant="danger" onClick={() => setConfirmClear(true)} disabled={!conn.elm || faults === 0}><Trash2 size={18} aria-hidden /> Clear codes</Button>
       </div>
+      <p className="small no-print" style={{ marginTop: 12 }}><Link to={`/vehicles/${encodeURIComponent(scan.vehicleKey)}`}>Vehicle history (all visits)</Link></p>
       {scan.clearedAt && <p className="small muted" style={{ marginTop: 8 }}>Codes were cleared after this scan ({fmtDate(scan.clearedAt)}).</p>}
 
       <h2>Systems checked ({r.systems.length})</h2>

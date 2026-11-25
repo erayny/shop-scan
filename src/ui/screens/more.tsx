@@ -17,7 +17,7 @@ export function Reports() {
   const shown = useMemo(() => {
     const t = q.trim().toLowerCase();
     if (!scans) return [];
-    return scans.filter((s) => s.status === 'complete' && (!t || [s.vin, s.plate, s.customerName, s.make, s.model, s.reportId, s.roNumber].some((x) => x?.toLowerCase().includes(t))));
+    return scans.filter((s) => s.status !== 'failed' && (!t || [s.vin, s.plate, s.customerName, s.make, s.model, s.reportId, s.roNumber].some((x) => x?.toLowerCase().includes(t))));
   }, [scans, q]);
   if (!scans) return null;
   return (
@@ -32,12 +32,14 @@ export function Reports() {
             const n = new Set(s.result?.dtcs.map((d) => d.code)).size;
             return (
               <li key={s.id}>
-                <Link to={`/scan/${s.id}`}>
+                <Link to={s.status === 'running' ? `/scan/${s.id}/run` : `/scan/${s.id}`}>
                   <span>
                     <b>{title(s)}</b>{s.plate && <span className="muted"> · {s.plate}</span>}
                     <div className="small muted">{fmtDate(s.startedAt)}{s.customerName && ` · ${s.customerName}`}</div>
                   </span>
-                  <span className={n ? 'err' : 'mon-ok'} style={{ fontSize: 'var(--fs-sm)', fontWeight: 600 }}>{n ? `${n} code${n > 1 ? 's' : ''}` : 'No codes'}</span>
+                  {s.status === 'running'
+                    ? <span className="mon-no" style={{ fontSize: 'var(--fs-sm)', fontWeight: 600 }}>Not finished · resume</span>
+                    : <span className={n ? 'err' : 'mon-ok'} style={{ fontSize: 'var(--fs-sm)', fontWeight: 600 }}>{n ? `${n} code${n > 1 ? 's' : ''}` : 'No codes'}</span>}
                 </Link>
               </li>
             );
