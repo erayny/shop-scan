@@ -19,9 +19,17 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
       - run: npm ci
       - run: npm test
-      - run: npm run build
+      - name: Build web app, then Liftside Bridge for Windows (web app embedded)
+        run: |
+          ./tools/build-bridge.sh
+          mkdir -p dist/downloads
+          cp dist-bridge/liftside-bridge-32.exe dist-bridge/liftside-bridge-64.exe dist/downloads/
+          (cd dist/downloads && sha256sum *.exe > SHA256SUMS.txt)
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -1,4 +1,4 @@
-import { Elm327 } from './elm327';
+import type { ObdLink } from './link';
 import {
   decodeDtc, decodeDtcList, decodeMilStatus, decodePidValue, decodeSupported, decodeVin, ecuName, hex2, pidDef,
   type Message, type Monitor,
@@ -52,11 +52,11 @@ async function step<T>(id: StepId, onStep: OnStep, fn: () => Promise<T>, detail:
   }
 }
 
-export async function readVin(elm: Elm327): Promise<string | null> {
+export async function readVin(elm: ObdLink): Promise<string | null> {
   return decodeVin(await elm.request('0902', 8000));
 }
 
-async function readCodes(elm: Elm327, mode: '03' | '07' | '0A', status: DtcStatus): Promise<ScanDtc[]> {
+async function readCodes(elm: ObdLink, mode: '03' | '07' | '0A', status: DtcStatus): Promise<ScanDtc[]> {
   const msgs = await elm.request(mode, 8000);
   const out: ScanDtc[] = [];
   for (const m of msgs) {
@@ -69,7 +69,7 @@ async function readCodes(elm: Elm327, mode: '03' | '07' | '0A', status: DtcStatu
   return out;
 }
 
-export async function readSupportedPids(elm: Elm327): Promise<number[]> {
+export async function readSupportedPids(elm: ObdLink): Promise<number[]> {
   const all = new Set<number>();
   for (const base of ['00', '20', '40']) {
     const msgs = await elm.request('01' + base).catch(() => [] as Message[]);
@@ -82,7 +82,7 @@ export async function readSupportedPids(elm: Elm327): Promise<number[]> {
 
 const FREEZE_PIDS = [0x04, 0x05, 0x06, 0x07, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11];
 
-export async function runAutoScan(elm: Elm327, onStep: OnStep = () => {}): Promise<ScanResult> {
+export async function runAutoScan(elm: ObdLink, onStep: OnStep = () => {}): Promise<ScanResult> {
   const vin = await step('vin', onStep, () => readVin(elm), (v) => v ?? 'Not reported by this vehicle', null);
 
   const status = await step('status', onStep, async () => {
@@ -137,11 +137,11 @@ export async function runAutoScan(elm: Elm327, onStep: OnStep = () => {}): Promi
   };
 }
 
-export async function clearCodes(elm: Elm327): Promise<void> {
+export async function clearCodes(elm: ObdLink): Promise<void> {
   await elm.request('04', 8000);
 }
 
-export async function readLive(elm: Elm327, pid: number): Promise<number | null> {
+export async function readLive(elm: ObdLink, pid: number): Promise<number | null> {
   if (!pidDef(pid)) return null;
   const m = pickEngine(await elm.request('01' + hex2(pid)));
   return m ? decodePidValue(m.data)?.value ?? null : null;

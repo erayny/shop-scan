@@ -5,3 +5,6 @@ replica/screens/
 test-results
 *.local
 *.tsbuildinfo
+dist-bridge
+bridge/web/*
+!bridge/web/.gitkeep

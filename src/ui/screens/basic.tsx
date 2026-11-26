@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { Bluetooth, Car, FileText, Gauge, Settings as Cog, Stethoscope, Download, Upload } from 'lucide-react';
+import { Bluetooth, Car, Cable, FileText, Gauge, Settings as Cog, Stethoscope, Download, Upload } from 'lucide-react';
 import { useConn } from '../conn';
 import { Button, ButtonLink, Field, StatusPill, StepList, useToast, type StepState } from '../kit';
 import { bluetoothAvailable } from '../../obd/transport';
 import { SIM_CARS } from '../../obd/sim';
+import { bridgeDevices, type J2534Device } from '../../obd/j2534';
+import type { ConnectKind } from '../conn';
 import { db, getSettings, exportAll, importAll, forgetCustomer, DEFAULT_SETTINGS, type Settings } from '../../db';
 import { BRAND } from '../../brand';
 
@@ -44,6 +46,9 @@ export function Connect() {
   const [params] = useSearchParams();
   const next = params.get('next');
   const [sim, setSim] = useState(SIM_CARS[1].key);
+  const [passthru, setPassthru] = useState<J2534Device[] | null>(null);
+  const [device, setDevice] = useState('');
+  useEffect(() => { bridgeDevices().then((d) => { setPassthru(d); if (d?.length) setDevice(d[0].name); }); }, []);
   const order = ['bluetooth', 'reset', 'protocol', 'ecus'] as const;
   const idx = conn.step ? order.indexOf(conn.step) : -1;
   const stateOf = (i: number): StepState => {
@@ -53,7 +58,7 @@ export function Connect() {
     if (i === idx && conn.status === 'connecting') return 'running';
     return 'pending';
   };
-  const go = async (kind: 'ble' | { sim: string }) => {
+  const go = async (kind: ConnectKind) => {
     const ok = await conn.connect(kind);
     if (ok && next === 'scan') nav('/scan/new');
     if (ok && next === 'live') nav('/live');
@@ -63,13 +68,13 @@ export function Connect() {
   return (
     <>
       <h1>Connect adapter</h1>
-      <p className="muted">Plug the Bluetooth OBD adapter into the port under the dash, turn the ignition on (engine can be off), then connect.</p>
+      <p className="muted">{passthru ? 'Plug the pass-thru device into the car and into this PC, turn the ignition on (engine can be off), then connect.' : 'Plug the Bluetooth OBD adapter into the port under the dash, turn the ignition on (engine can be off), then connect.'}</p>
       <div className="row">
         <StatusPill status={conn.status} />
         {conn.status === 'connected' && <span className="small muted">{conn.adapterName} · {conn.protocol}</span>}
       </div>
       <StepList steps={[
-        { label: 'Bluetooth', state: stateOf(0), detail: idx === 0 && busy ? 'Pick your adapter in the list' : undefined },
+        { label: passthru ? 'Pass-thru device' : 'Bluetooth', state: stateOf(0), detail: idx === 0 && busy ? 'Pick your adapter in the list' : undefined },
         { label: 'Adapter reset', state: stateOf(1) },
         { label: 'Find the car’s protocol', state: stateOf(2), detail: idx === 2 && busy ? 'This can take up to 15 seconds' : undefined },
         { label: 'Vehicle modules', state: stateOf(3), detail: conn.status === 'connected' ? conn.stepDetail : undefined },
@@ -83,10 +88,33 @@ export function Connect() {
         </div>
       ) : (
         <>
+          {passthru && (
+            <div className="card">
+              <h3><Cable size={18} aria-hidden style={{ verticalAlign: -3 }} /> J2534 pass-thru on this PC</h3>
+              {passthru.length === 0 ? (
+                <p className="small muted">No J2534 device is installed on this PC. Install your device's J2534 driver (for example the MaxiFlash driver from its maker), plug it in by USB, then reopen Liftside Bridge.</p>
+              ) : (
+                <div className="row">
+                  <select aria-label="Pass-thru device" value={device} onChange={(e) => setDevice(e.target.value)} className="chip" style={{ minHeight: 48 }}>
+                    {passthru.map((d) => <option key={d.name} value={d.name}>{d.name}{d.vendor ? ` (${d.vendor})` : ''}</option>)}
+                  </select>
+                  <Button onClick={() => go({ j2534: device })} loading={busy} disabled={!device}>Connect pass-thru</Button>
+                </div>
+              )}
+              <p className="small muted" style={{ marginTop: 8 }}>Reads CAN cars (most 2008 and newer). Older K-line and J1850 cars are not supported through pass-thru yet.</p>
+            </div>
+          )}
           <div className="row">
             <Button onClick={() => go('ble')} loading={busy} disabled={!bluetoothAvailable()}><Bluetooth size={20} aria-hidden /> Connect Bluetooth adapter</Button>
           </div>
           {!bluetoothAvailable() && <p className="small muted" style={{ marginTop: 8 }}>This browser has no Bluetooth access. On the shop tablet, open this app in Chrome. You can still try the demo car below.</p>}
+          {passthru === null && (
+            <p className="small muted" style={{ marginTop: 8 }}>
+              Have a J2534 pass-thru device (such as a MaxiFlash) and a Windows PC? Download{' '}
+              <a href="./downloads/liftside-bridge-32.exe" download>Liftside Bridge</a>, run it, and use Liftside from the PC.
+              {' '}(<a href="./downloads/liftside-bridge-64.exe" download>64-bit version</a> for 64-bit-only drivers.)
+            </p>
+          )}
           <div className="card" style={{ marginTop: 24 }}>
             <h3><Car size={18} aria-hidden style={{ verticalAlign: -3 }} /> No adapter handy? Use a demo car</h3>
             <p className="small muted">For training and trying the app. Results are simulated and marked DEMO on the report.</p>
